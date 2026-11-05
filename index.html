@@ -21,9 +21,9 @@ h1{font-size:clamp(26px,5vw,38px);margin:0 0 8px}.sub{color:var(--muted);margin:
 <body>
 <main class="app">
   <div class="top"><div class="tag">Business English · Worttrainer</div><div class="counter" id="counter">1 / 22</div></div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:-12px 0 22px"><button class="btn" id="direction" style="background:#263653;color:#eef4ff">Richtung: Deutsch → Englisch</button></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin:-12px 0 22px"><div class="btn" id="direction" style="background:#263653;color:#eef4ff;cursor:default">Richtung: zufällig</div></div>
   <h1>Finde die richtige Übersetzung</h1>
-  <p class="sub">Выбери правильный перевод немецкого слова.</p>
+  <p class="sub">Выбери правильный перевод слова. Направление меняется случайно в каждом вопросе.</p>
   <div class="progress"><div class="bar" id="bar"></div></div>
   <section id="game">
     <div class="prompt-label" id="promptLabel">WAS BEDEUTET DIESES WORT AUF ENGLISCH?</div>
@@ -64,7 +64,7 @@ const $=id=>document.getElementById(id);
 function shuffle(a){for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 function start(){order=shuffle(words.map((_,i)=>i));index=0;score=0;answered=false;$("game").hidden=false;$("result").hidden=true;render()}
 function render(){
- answered=false;const pair=words[order[index]];
+ answered=false;reverse=Math.random()<0.5;$("direction").textContent=reverse?"Richtung: Englisch → Deutsch":"Richtung: Deutsch → Englisch";const pair=words[order[index]];
  $("counter").textContent=`${index+1} / ${words.length}`;$("bar").style.width=`${index/words.length*100}%`;
  $("word").textContent=reverse?pair[1]:pair[0];$("promptLabel").textContent=reverse?"WAS BEDEUTET DIESES ENGLISCHE WORT AUF DEUTSCH?":"WAS BEDEUTET DIESES WORT AUF ENGLISCH?";$("feedback").textContent="";$("feedback").className="feedback";
  $("score").textContent=`Правильно: ${score}`;$("next").disabled=true;$("next").textContent=index===words.length-1?"Результат":"Далее →";
@@ -86,7 +86,6 @@ function finish(){
  $("result").innerHTML=`<div class="big">${pct>=75?"🏆":"📚"}</div><h2>${score} / ${words.length} richtig</h2><p>${message}<br>Твой результат: ${pct}%</p><button class="btn" onclick="start()">Играть ещё раз ↻</button>`;
 }
 $("next").addEventListener("click",()=>{if(!answered)return;if(index<words.length-1){index++;render()}else finish()});
-$("direction").addEventListener("click",()=>{reverse=!reverse;$("direction").textContent=reverse?"Richtung: Englisch → Deutsch":"Richtung: Deutsch → Englisch";start()});
 start();
 </script>
 </body>
